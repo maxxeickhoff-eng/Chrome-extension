@@ -1,0 +1,16 @@
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Packaged extension files (a .pem file is the private signing key of a packed extension)
+*.zip
+*.crx
+*.pem
+
+# Local secrets (this project needs none, but never commit them)
+.env
+.env.*
+
+# Logs
+*.log

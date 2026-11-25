@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Daybreak",
+  "version": "1.0.0",
+  "description": "A personal new tab: a daily landscape photo, clock, greeting, your main focus, to-dos, weather and a quote of the day.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": ["storage", "search"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
