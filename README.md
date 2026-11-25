@@ -123,25 +123,21 @@ Daybreak asks for **no** host permissions, can't read the websites you visit and
 
 ## Learning
 
-**What I learned:**
+### What I learned
 
-- **How a browser extension is built:**
-  - `manifest.json` describes the extension.
-  - `chrome_url_overrides` replaces the new tab page.
-  - Permissions have to be declared and should be kept to the minimum.
-- **Manifest V3 rules:** extension pages may not run inline scripts, so all JavaScript lives in separate files and every button is wired up with `addEventListener`.
-- **Two APIs without a key:**
-  - Turning a city name into coordinates (geocoding) and then asking for the forecast.
-  - Translating the numeric WMO weather codes into icons and words.
-- **"Same thing all day" without a server:** the number of days since 1970 decides the photo and the quote. They change at midnight, and nothing has to be stored on a server.
-- **Caching to be polite to free APIs:** the photo is fetched once a day and the weather at most every 30 minutes; both are kept in storage.
+I had used browser extensions for years without knowing how simple their basic structure is. Everything starts with `manifest.json`: it says which page replaces the new tab (`chrome_url_overrides`) and which permissions the extension needs. I kept those to two, `storage` and `search`. Daybreak has no host permissions, so it can't read the websites I visit, and I like that I can explain exactly why it needs each permission. Manifest V3 also doesn't allow inline scripts, which is why all the JavaScript is in separate files.
 
-**Challenges and how I approached them:**
+The weather taught me how two API calls can depend on each other. First Open-Meteo turns the city name into coordinates, then the forecast is requested for those coordinates. The forecast doesn't come back as words either. It sends numeric WMO weather codes (61 means rain, for example), which the app translates into an icon and a label.
 
-1. **Testing an extension outside Chrome.** A Chrome extension can't simply be opened as a normal page, because the Chrome APIs (`chrome.storage`, `chrome.search`) don't exist there. I wrapped storage in a small `storage` object: inside the extension it uses `chrome.storage.local`, outside it falls back to `localStorage`. That way I could test every feature quickly in a normal browser tab, and then load the real extension with **Load unpacked**.
-2. **Keeping several new tabs in sync.** With two new tabs open, a to-do added in one didn't appear in the other. Listening to `chrome.storage.onChanged` and re-drawing the affected parts fixed it.
-3. **Photos that don't fit.** Picsum also has portrait photos, which look bad as a full-screen background. I filter the list to landscape photos only, and request the image at the size of the screen.
-4. **No internet.** If the photo can't be loaded, a gradient that matches the time of day is shown instead; if the weather can't be loaded, the last known weather stays.
+My favourite small trick is picking the photo and the quote of the day without any server: the app counts the days since 1 January 1970, and that number chooses the photo and the quote. Every tab shows the same ones all day, and they change at midnight. To be fair to the free services, the photo is only fetched once a day and the weather at most every 30 minutes.
+
+### Challenges I ran into
+
+Testing was harder than for a normal website. The Chrome extension functions (`chrome.storage`, `chrome.search`) don't exist when you open the page in a normal tab. So the storage code has a fallback: inside the extension it uses `chrome.storage.local`, and in a normal tab it uses `localStorage`. That made it possible to test every feature quickly in the browser. The final test had to be done by hand, because current versions of Chrome no longer load unpacked extensions from the command line. I loaded it myself through `chrome://extensions` → Developer mode → Load unpacked. On my first try I was still looking at the normal Google new tab and wondered where my extension was. It simply wasn't loaded yet.
+
+The audit found that the photographer link, which comes from Picsum's API, went into the page unchecked. A manipulated value like `javascript:...` would have become a clickable link. Now the link is only shown if it is a normal `https://` address, and the photo id has to be a number.
+
+I also thought about what happens when things go wrong. Picsum has portrait photos too, which look bad as a full-screen background, so the app only picks landscape ones. Without internet a gradient matching the time of day is shown instead of the photo, and the last known weather stays on screen.
 
 ## Limitations and assistance
 
