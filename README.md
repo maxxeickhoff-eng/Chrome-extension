@@ -41,6 +41,7 @@ This project is the *Momentum Dash replica* assignment. The goal was to rebuild 
 | `icons/` | Extension icons (16, 32, 48, 128 px), drawn for this project |
 | `docs/` | Screenshot for this README |
 | `AUDIT.md` | Publication audit: what was checked, found and fixed |
+| `LICENSE` | MIT licence for the code |
 
 ## Data collection
 
@@ -103,10 +104,7 @@ Panels close when you click outside them or press `Esc`.
 
 **Requirements:** Google Chrome, or another Chromium browser such as Edge, Brave or Arc. Nothing needs to be installed, no configuration file and no API key are needed.
 
-1. **Download** this repository: green **Code** button → **Download ZIP**, then unzip it. Or clone it:
-   ```bash
-   git clone https://github.com/<your-username>/<this-repository>.git
-   ```
+1. **Download** this repository: green **Code** button → **Download ZIP**, then unzip it. Or copy the address shown under **Code** and clone it with `git clone` followed by that address.
 2. In Chrome, open the address `chrome://extensions`.
 3. Turn on **Developer mode** (switch in the top right).
 4. Click **Load unpacked** and select the folder that contains `manifest.json`.
@@ -176,3 +174,7 @@ Daybreak asks for **no** host permissions, can't read the websites you visit and
   - Weather by Open-Meteo (credited in the weather card).
   - The Chrome Extensions documentation (Manifest V3, `chrome.storage`, `chrome.search`).
 - **Quotes:** short, widely quoted lines with their usual attribution. Some attributions are traditional and marked as such.
+
+## License
+
+Code: [MIT](LICENSE). Photos: their Unsplash photographers. Weather data: Open-Meteo.

@@ -244,7 +244,19 @@ async function pickPhoto(shift) {
   return { date: todayKey(), shift, id: photo.id, author: photo.author, source: photo.url };
 }
 
+// The photo id and the Unsplash link come from Picsum's API. Only a numeric id and an https:// link
+// are used, so an unexpected value can never become a "javascript:" link or a strange image URL.
+function safeHttps(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 function showPhoto(photo) {
+  if (!/^\d+$/.test(String(photo.id))) throw new Error("Unexpected photo id");
   const width = Math.min(2560, Math.ceil(screen.width * (window.devicePixelRatio || 1)));
   const height = Math.round(width * (screen.height / screen.width));
   const url = `https://picsum.photos/id/${photo.id}/${width}/${height}`;
@@ -256,12 +268,11 @@ function showPhoto(photo) {
   };
   img.src = url;
 
-  const credit = $("credit");
-  credit.replaceChildren(
-    "Photo by ",
-    Object.assign(document.createElement("a"), { href: photo.source, target: "_blank", rel: "noopener", textContent: photo.author }),
-    " on Unsplash"
-  );
+  const source = safeHttps(photo.source);
+  const author = source
+    ? Object.assign(document.createElement("a"), { href: source, target: "_blank", rel: "noopener", textContent: photo.author })
+    : photo.author;
+  $("credit").replaceChildren("Photo by ", author, " on Unsplash");
 }
 
 async function loadPhoto(forceShift) {
